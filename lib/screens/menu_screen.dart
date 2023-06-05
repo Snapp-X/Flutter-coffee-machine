@@ -163,9 +163,8 @@ class MenuScreen extends ConsumerWidget {
     return LineChartData(
       gridData: FlGridData(
         show: true,
-        drawVerticalLine: true,
-        horizontalInterval: 1,
-        verticalInterval: 1,
+        drawVerticalLine: false,
+        horizontalInterval: 20,
         getDrawingHorizontalLine: (value) {
           return FlLine(
             color: Colors.black,
@@ -195,8 +194,7 @@ class MenuScreen extends ConsumerWidget {
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 30,
-            interval: 5,
+            interval: 3,
             getTitlesWidget: (value, meta) =>
                 bottomTitleWidgets(value, currentTemperatureData),
           ),
@@ -215,6 +213,7 @@ class MenuScreen extends ConsumerWidget {
       maxY: 100,
       lineBarsData: [
         LineChartBarData(
+          isCurved: true,
           spots: currentTemperatureData
               .asMap()
               .map((index, temperature) => MapEntry(
@@ -223,6 +222,7 @@ class MenuScreen extends ConsumerWidget {
               .toList(),
         ),
         LineChartBarData(
+          isCurved: true,
           spots: currentTemperatureData
               .asMap()
               .map((index, _) => MapEntry(index.toDouble(),
@@ -238,7 +238,8 @@ class MenuScreen extends ConsumerWidget {
     final now = DateTime.now();
     const elapsedMinutes = 30;
     const stepMinutes = elapsedMinutes / 4;
-    final time = now.subtract(Duration(minutes: (value * stepMinutes).toInt()));
+    final time =
+        now.subtract(Duration(minutes: ((4 - value) * stepMinutes).toInt()));
     final formattedTime =
         '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
 
