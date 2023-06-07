@@ -41,8 +41,7 @@ class MenuScreen extends ConsumerWidget {
                                   ),
                                 ),
                                 Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.06,
+                                  height: 30,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(color: Colors.grey),
@@ -64,7 +63,7 @@ class MenuScreen extends ConsumerWidget {
                         );
                       },
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 20),
                     Consumer(
                       builder: (context, watch, child) {
                         return currentTemperature.when(
@@ -85,8 +84,7 @@ class MenuScreen extends ConsumerWidget {
                                     ),
                                   ),
                                   Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.06,
+                                    height: 30,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(color: Colors.grey),
@@ -95,7 +93,6 @@ class MenuScreen extends ConsumerWidget {
                                       alignment: Alignment.center,
                                       child: Text(
                                         currentTemperature.toString(),
-                                        style: const TextStyle(fontSize: 18),
                                       ),
                                     ),
                                   ),
@@ -126,7 +123,7 @@ class MenuScreen extends ConsumerWidget {
                         },
                       );
                     }),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 20),
                     Consumer(builder: (context, ref, child) {
                       final desiredPValue = ref.watch(pValueProvider);
 
@@ -172,6 +169,7 @@ class MenuScreen extends ConsumerWidget {
                         },
                       );
                     }),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -356,22 +354,36 @@ class MenuScreen extends ConsumerWidget {
             ),
           ),
           Container(
-            //  height: MediaQuery.of(context).size.height * 0.06,
+            height: 30,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(25),
               border: Border.all(color: Colors.grey),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.remove),
-                  onPressed: onDecrease,
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: IconButton(
+                    iconSize: 12,
+                    icon: const Icon(Icons.remove),
+                    onPressed: onDecrease,
+                  ),
                 ),
                 Text(value.toString()),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: onIncrease,
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: IconButton(
+                    iconSize: 12,
+                    icon: const Icon(Icons.add),
+                    onPressed: onIncrease,
+                  ),
                 ),
               ],
             ),
