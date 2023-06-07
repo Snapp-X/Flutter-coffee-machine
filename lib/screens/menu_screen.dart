@@ -177,7 +177,8 @@ class MenuScreen extends ConsumerWidget {
           Expanded(
             flex: 1,
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.only(
+                  bottom: 20, top: 20, right: 40, left: 20),
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.450,
                 height: MediaQuery.of(context).size.height * 0.8,
@@ -187,7 +188,8 @@ class MenuScreen extends ConsumerWidget {
                 ),
                 child: Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(40),
+                    padding: const EdgeInsets.only(
+                        left: 20, right: 10, top: 20, bottom: 20),
                     child: Consumer(builder: (context, watch, child) {
                       final currentTemperature =
                           ref.watch(currentTemperatureProvider);
@@ -195,11 +197,14 @@ class MenuScreen extends ConsumerWidget {
                           ref.watch(desiredTemperatureProvider.notifier).state;
 
                       return currentTemperature.when(
-                        data: (data) => LineChart(
-                          /*        swapAnimationDuration:
-                                Duration(milliseconds: 150),
-                            swapAnimationCurve: Curves.linear,*/
-                          mainData(data, desiredTemperature),
+                        data: (data) => SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          child: LineChart(
+                            /*        swapAnimationDuration:
+                                  Duration(milliseconds: 150),
+                              swapAnimationCurve: Curves.linear,*/
+                            mainData(data, desiredTemperature),
+                          ),
                         ),
                         loading: () => const CircularProgressIndicator(),
                         error: (error, stackTrace) => Text('Error: $error'),
@@ -239,12 +244,6 @@ class MenuScreen extends ConsumerWidget {
             strokeWidth: 1,
           );
         },
-        getDrawingVerticalLine: (value) {
-          return FlLine(
-            color: Colors.black,
-            strokeWidth: 1,
-          );
-        },
       ),
       titlesData: FlTitlesData(
         show: true,
@@ -275,9 +274,13 @@ class MenuScreen extends ConsumerWidget {
         ),
       ),
       borderData: FlBorderData(
-        show: true,
-        border: Border.all(color: const Color(0xff37434d)),
-      ),
+          show: true,
+          border: const Border(
+            bottom: BorderSide(color: Colors.black),
+            top: BorderSide(
+              color: Colors.black,
+            ),
+          )),
       minX: 0,
       maxX: currentTemperatureData.length.toDouble() - 1,
       minY: 0,
