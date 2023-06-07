@@ -169,7 +169,6 @@ class MenuScreen extends ConsumerWidget {
                         },
                       );
                     }),
-                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -177,29 +176,36 @@ class MenuScreen extends ConsumerWidget {
           ),
           Expanded(
             flex: 1,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.475,
-              height: MediaQuery.of(context).size.height * 0.6,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(40),
-                  child: Consumer(builder: (context, watch, child) {
-                    final currentTemperature =
-                        ref.watch(currentTemperatureProvider);
-                    final desiredTemperature =
-                        ref.watch(desiredTemperatureProvider.notifier).state;
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.450,
+                height: MediaQuery.of(context).size.height * 0.8,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(40),
+                    child: Consumer(builder: (context, watch, child) {
+                      final currentTemperature =
+                          ref.watch(currentTemperatureProvider);
+                      final desiredTemperature =
+                          ref.watch(desiredTemperatureProvider.notifier).state;
 
-                    return currentTemperature.when(
-                      data: (data) => LineChart(
-                        /*        swapAnimationDuration:
-                            Duration(milliseconds: 150),
-                        swapAnimationCurve: Curves.linear,*/
-                        mainData(data, desiredTemperature),
-                      ),
-                      loading: () => const CircularProgressIndicator(),
-                      error: (error, stackTrace) => Text('Error: $error'),
-                    );
-                  }),
+                      return currentTemperature.when(
+                        data: (data) => LineChart(
+                          /*        swapAnimationDuration:
+                                Duration(milliseconds: 150),
+                            swapAnimationCurve: Curves.linear,*/
+                          mainData(data, desiredTemperature),
+                        ),
+                        loading: () => const CircularProgressIndicator(),
+                        error: (error, stackTrace) => Text('Error: $error'),
+                      );
+                    }),
+                  ),
                 ),
               ),
             ),
