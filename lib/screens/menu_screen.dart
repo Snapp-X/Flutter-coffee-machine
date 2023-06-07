@@ -64,14 +64,15 @@ class MenuScreen extends ConsumerWidget {
                                     child: Text(
                                       'Current Temperature:',
                                       style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
                                       ),
                                     ),
                                   ),
                                   Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.06,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(20),
                                       border: Border.all(color: Colors.grey),
                                     ),
                                     child: Align(
@@ -316,6 +317,7 @@ class MenuScreen extends ConsumerWidget {
             ),
           ),
           Container(
+            height: MediaQuery.of(context).size.height * 0.06,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: Colors.grey),
