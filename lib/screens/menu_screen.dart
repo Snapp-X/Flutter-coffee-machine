@@ -20,114 +20,145 @@ class MenuScreen extends ConsumerWidget {
           Expanded(
             flex: 1,
             child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Consumer(builder: (context, ref, child) {
-                    final switchState = ref.watch(switchStateProvider);
+              child: Padding(
+                padding: const EdgeInsets.all(40),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Consumer(builder: (context, ref, child) {
+                      final switchState = ref.watch(switchStateProvider);
 
-                    return switchState.when(
-                      data: (value) => Switch(
-                        value: value,
-                        onChanged: null,
-                        activeTrackColor: Colors.green,
-                        inactiveTrackColor: Colors.red,
-                        thumbColor: MaterialStateProperty.resolveWith<Color?>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.selected)) {
-                            return Colors.green;
-                          } else {
-                            return Colors.red;
-                          }
-                        }),
-                      ),
-                      loading: () => const CircularProgressIndicator(),
-                      error: (error, stackTrace) =>
-                          const Text('Error fetching switch state'),
-                    );
-                  }),
-                  const SizedBox(height: 20),
-                  Consumer(
-                    builder: (context, watch, child) {
-                      return currentTemperature.when(
-                        data: (temperatureList) {
-                          final currentTemperature = temperatureList.last;
-                          return Text(
-                            'Current Temperature: $currentTemperature',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
-                        },
+                      return switchState.when(
+                        data: (value) => Switch(
+                          value: value,
+                          onChanged: null,
+                          activeTrackColor: Colors.green,
+                          inactiveTrackColor: Colors.red,
+                          thumbColor: MaterialStateProperty.resolveWith<Color?>(
+                              (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.green;
+                            } else {
+                              return Colors.red;
+                            }
+                          }),
+                        ),
                         loading: () => const CircularProgressIndicator(),
                         error: (error, stackTrace) =>
-                            const Text('Error fetching temperature data'),
+                            const Text('Error fetching switch state'),
                       );
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  Consumer(builder: (context, ref, child) {
-                    final desiredTemperature =
-                        ref.watch(desiredTemperatureProvider);
+                    }),
+                    const SizedBox(height: 20),
+                    Consumer(
+                      builder: (context, watch, child) {
+                        return currentTemperature.when(
+                          data: (temperatureList) {
+                            final currentTemperature = temperatureList.last;
+                            return SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      'Current Temperature:',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(color: Colors.grey),
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        currentTemperature.toString(),
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          loading: () => const CircularProgressIndicator(),
+                          error: (error, stackTrace) =>
+                              const Text('Error fetching temperature data'),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    Consumer(builder: (context, ref, child) {
+                      final desiredTemperature =
+                          ref.watch(desiredTemperatureProvider);
 
-                    return _buildValueSection(
-                      title: 'Desired Temperature',
-                      value: desiredTemperature,
-                      onIncrease: () {
-                        ref.read(desiredTemperatureProvider.notifier).state++;
-                      },
-                      onDecrease: () {
-                        ref.read(desiredTemperatureProvider.notifier).state--;
-                      },
-                    );
-                  }),
-                  const SizedBox(height: 10),
-                  Consumer(builder: (context, ref, child) {
-                    final desiredPValue = ref.watch(pValueProvider);
+                      return _buildValueSection(
+                        context: context,
+                        title: 'Desired Temperature',
+                        value: desiredTemperature,
+                        onIncrease: () {
+                          ref.read(desiredTemperatureProvider.notifier).state++;
+                        },
+                        onDecrease: () {
+                          ref.read(desiredTemperatureProvider.notifier).state--;
+                        },
+                      );
+                    }),
+                    const SizedBox(height: 10),
+                    Consumer(builder: (context, ref, child) {
+                      final desiredPValue = ref.watch(pValueProvider);
 
-                    return _buildValueSection(
-                      title: 'P',
-                      value: desiredPValue,
-                      onIncrease: () {
-                        ref.read(pValueProvider.notifier).state++;
-                      },
-                      onDecrease: () {
-                        ref.read(pValueProvider.notifier).state--;
-                      },
-                    );
-                  }),
-                  const SizedBox(height: 10),
-                  Consumer(builder: (context, ref, child) {
-                    final desiredIValue = ref.watch(iValueProvider);
+                      return _buildValueSection(
+                        context: context,
+                        title: 'P',
+                        value: desiredPValue,
+                        onIncrease: () {
+                          ref.read(pValueProvider.notifier).state++;
+                        },
+                        onDecrease: () {
+                          ref.read(pValueProvider.notifier).state--;
+                        },
+                      );
+                    }),
+                    const SizedBox(height: 10),
+                    Consumer(builder: (context, ref, child) {
+                      final desiredIValue = ref.watch(iValueProvider);
 
-                    return _buildValueSection(
-                      title: 'I',
-                      value: desiredIValue,
-                      onIncrease: () {
-                        ref.read(iValueProvider.notifier).state++;
-                      },
-                      onDecrease: () {
-                        ref.read(iValueProvider.notifier).state--;
-                      },
-                    );
-                  }),
-                  const SizedBox(height: 10),
-                  Consumer(builder: (context, ref, child) {
-                    final desiredDValue = ref.watch(dValueProvider);
+                      return _buildValueSection(
+                        context: context,
+                        title: 'I',
+                        value: desiredIValue,
+                        onIncrease: () {
+                          ref.read(iValueProvider.notifier).state++;
+                        },
+                        onDecrease: () {
+                          ref.read(iValueProvider.notifier).state--;
+                        },
+                      );
+                    }),
+                    const SizedBox(height: 10),
+                    Consumer(builder: (context, ref, child) {
+                      final desiredDValue = ref.watch(dValueProvider);
 
-                    return _buildValueSection(
-                      title: 'D',
-                      value: desiredDValue,
-                      onIncrease: () {
-                        ref.read(dValueProvider.notifier).state++;
-                      },
-                      onDecrease: () {
-                        ref.read(dValueProvider.notifier).state--;
-                      },
-                    );
-                  }),
-                ],
+                      return _buildValueSection(
+                        context: context,
+                        title: 'D',
+                        value: desiredDValue,
+                        onIncrease: () {
+                          ref.read(dValueProvider.notifier).state++;
+                        },
+                        onDecrease: () {
+                          ref.read(dValueProvider.notifier).state--;
+                        },
+                      );
+                    }),
+                  ],
+                ),
               ),
             ),
           ),
@@ -270,25 +301,42 @@ class MenuScreen extends ConsumerWidget {
     required double value,
     required VoidCallback onIncrease,
     required VoidCallback onDecrease,
+    required BuildContext context,
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 18),
-        ),
-        const SizedBox(width: 10),
-        IconButton(
-          icon: const Icon(Icons.remove),
-          onPressed: onDecrease,
-        ),
-        Text(value.toString()),
-        IconButton(
-          icon: const Icon(Icons.add),
-          onPressed: onIncrease,
-        ),
-      ],
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.3,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 18),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.grey),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: onDecrease,
+                ),
+                Text(value.toString()),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: onIncrease,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
