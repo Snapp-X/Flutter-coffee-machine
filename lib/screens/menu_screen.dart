@@ -12,9 +12,6 @@ class MenuScreen extends ConsumerWidget {
     final currentTemperature = ref.watch(currentTemperatureProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Coffee Machine'),
-      ),
       body: Row(
         children: [
           Expanded(
@@ -25,37 +22,56 @@ class MenuScreen extends ConsumerWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Consumer(builder: (context, ref, child) {
-                      final switchState = ref.watch(switchStateProvider);
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final switchState = ref.watch(switchStateProvider);
 
-                      return switchState.when(
-                        data: (value) => Switch(
-                          value: value,
-                          onChanged: null,
-                          activeTrackColor: Colors.green,
-                          inactiveTrackColor: Colors.red,
-                          thumbColor: MaterialStateProperty.resolveWith<Color?>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return Colors.green;
-                            } else {
-                              return Colors.red;
-                            }
-                          }),
-                        ),
-                        loading: () => const CircularProgressIndicator(),
-                        error: (error, stackTrace) =>
-                            const Text('Error fetching switch state'),
-                      );
-                    }),
-                    const SizedBox(height: 20),
+                        return switchState.when(
+                          data: (value) => SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.15,
+                            child: Column(
+                              children: [
+                                const Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    'ON/OFF',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.06,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.grey),
+                                    color: value ? Colors.green : null,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      value ? 'On' : 'Off',
+                                      style: const TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          loading: () => const CircularProgressIndicator(),
+                          error: (error, stackTrace) =>
+                              const Text('Error fetching switch state'),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 30),
                     Consumer(
                       builder: (context, watch, child) {
                         return currentTemperature.when(
                           data: (temperatureList) {
                             final currentTemperature = temperatureList.last;
                             return SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.3,
+                              width: MediaQuery.of(context).size.width * 0.35,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -93,7 +109,7 @@ class MenuScreen extends ConsumerWidget {
                         );
                       },
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     Consumer(builder: (context, ref, child) {
                       final desiredTemperature =
                           ref.watch(desiredTemperatureProvider);
@@ -110,7 +126,7 @@ class MenuScreen extends ConsumerWidget {
                         },
                       );
                     }),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 30),
                     Consumer(builder: (context, ref, child) {
                       final desiredPValue = ref.watch(pValueProvider);
 
@@ -126,7 +142,6 @@ class MenuScreen extends ConsumerWidget {
                         },
                       );
                     }),
-                    const SizedBox(height: 10),
                     Consumer(builder: (context, ref, child) {
                       final desiredIValue = ref.watch(iValueProvider);
 
@@ -142,7 +157,6 @@ class MenuScreen extends ConsumerWidget {
                         },
                       );
                     }),
-                    const SizedBox(height: 10),
                     Consumer(builder: (context, ref, child) {
                       final desiredDValue = ref.watch(dValueProvider);
 
@@ -165,23 +179,30 @@ class MenuScreen extends ConsumerWidget {
           ),
           Expanded(
             flex: 1,
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(40),
-                child: Consumer(builder: (context, watch, child) {
-                  final currentTemperature =
-                      ref.watch(currentTemperatureProvider);
-                  final desiredTemperature =
-                      ref.watch(desiredTemperatureProvider.notifier).state;
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.475,
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(40),
+                  child: Consumer(builder: (context, watch, child) {
+                    final currentTemperature =
+                        ref.watch(currentTemperatureProvider);
+                    final desiredTemperature =
+                        ref.watch(desiredTemperatureProvider.notifier).state;
 
-                  return currentTemperature.when(
-                    data: (data) => LineChart(
-                      mainData(data, desiredTemperature),
-                    ),
-                    loading: () => const CircularProgressIndicator(),
-                    error: (error, stackTrace) => Text('Error: $error'),
-                  );
-                }),
+                    return currentTemperature.when(
+                      data: (data) => LineChart(
+                        /*        swapAnimationDuration:
+                            Duration(milliseconds: 150),
+                        swapAnimationCurve: Curves.linear,*/
+                        mainData(data, desiredTemperature),
+                      ),
+                      loading: () => const CircularProgressIndicator(),
+                      error: (error, stackTrace) => Text('Error: $error'),
+                    );
+                  }),
+                ),
               ),
             ),
           ),
@@ -192,6 +213,17 @@ class MenuScreen extends ConsumerWidget {
 
   LineChartData mainData(
       List<double> currentTemperatureData, double desiredTemperature) {
+    // Generate increasing desired temperature values over time
+    final desiredTemperatureSpots = currentTemperatureData
+        .asMap()
+        .map((index, _) => MapEntry(
+            index.toDouble(),
+            FlSpot(
+                index.toDouble(),
+                index.toDouble() *
+                    (desiredTemperature / currentTemperatureData.length))))
+        .values
+        .toList();
     return LineChartData(
       gridData: FlGridData(
         show: true,
@@ -221,6 +253,9 @@ class MenuScreen extends ConsumerWidget {
           ),
         ),
         topTitles: AxisTitles(
+          axisNameWidget: const Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Temperaturverlauf in C°')),
           sideTitles: SideTitles(showTitles: false),
         ),
         bottomTitles: AxisTitles(
@@ -255,13 +290,17 @@ class MenuScreen extends ConsumerWidget {
         ),
         LineChartBarData(
           isCurved: true,
+          spots: desiredTemperatureSpots,
+        ),
+        /*LineChartBarData(
+          isCurved: true,
           spots: currentTemperatureData
               .asMap()
               .map((index, _) => MapEntry(index.toDouble(),
                   FlSpot(index.toDouble(), desiredTemperature)))
               .values
               .toList(),
-        ),
+        ),*/
       ],
     );
   }
@@ -305,7 +344,7 @@ class MenuScreen extends ConsumerWidget {
     required BuildContext context,
   }) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.3,
+      width: MediaQuery.of(context).size.width * 0.35,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -317,7 +356,7 @@ class MenuScreen extends ConsumerWidget {
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.06,
+            //  height: MediaQuery.of(context).size.height * 0.06,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: Colors.grey),
