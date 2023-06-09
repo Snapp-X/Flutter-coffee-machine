@@ -197,16 +197,20 @@ class MenuScreen extends ConsumerWidget {
                           ref.watch(desiredTemperatureProvider.notifier).state;
 
                       return currentTemperature.when(
-                        data: (data) => SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          child: LineChart(
-                            /*        swapAnimationDuration:
-                                  Duration(milliseconds: 150),
-                              swapAnimationCurve: Curves.linear,*/
-                            mainData(data, desiredTemperature),
-                          ),
-                        ),
-                        loading: () => const CircularProgressIndicator(),
+                        data: (currentData) {
+                          final desiredTemperatureData = List<double>.filled(
+                            currentData.length,
+                            desiredTemperature,
+                          );
+
+                          return SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            child: LineChart(
+                              mainData(currentData, desiredTemperatureData),
+                            ),
+                          );
+                        },
+                        loading: () => CircularProgressIndicator(),
                         error: (error, stackTrace) => Text('Error: $error'),
                       );
                     }),
@@ -220,19 +224,8 @@ class MenuScreen extends ConsumerWidget {
     );
   }
 
-  LineChartData mainData(
-      List<double> currentTemperatureData, double desiredTemperature) {
-    // Generate increasing desired temperature values over time
-    final desiredTemperatureSpots = currentTemperatureData
-        .asMap()
-        .map((index, _) => MapEntry(
-            index.toDouble(),
-            FlSpot(
-                index.toDouble(),
-                index.toDouble() *
-                    (desiredTemperature / currentTemperatureData.length))))
-        .values
-        .toList();
+  LineChartData mainData(List<double> currentTemperatureData,
+      List<double> desiredTemperatureData) {
     return LineChartData(
       gridData: FlGridData(
         show: true,
@@ -290,24 +283,37 @@ class MenuScreen extends ConsumerWidget {
           isCurved: true,
           spots: currentTemperatureData
               .asMap()
-              .map((index, temperature) => MapEntry(
-                  index.toDouble(), FlSpot(index.toDouble(), temperature)))
+              .map(
+                (index, currentTemperature) => MapEntry(index.toDouble(),
+                    FlSpot(index.toDouble(), currentTemperature)),
+              )
               .values
               .toList(),
         ),
         LineChartBarData(
           isCurved: true,
-          spots: desiredTemperatureSpots,
-        ),
-        /*LineChartBarData(
-          isCurved: true,
           spots: currentTemperatureData
               .asMap()
-              .map((index, _) => MapEntry(index.toDouble(),
-                  FlSpot(index.toDouble(), desiredTemperature)))
+              .map(
+                (index, currentTemperature) => MapEntry(index.toDouble(),
+                    FlSpot(index.toDouble(), currentTemperature)),
+              )
               .values
               .toList(),
-        ),*/
+        ),
+        LineChartBarData(
+          isCurved: true,
+          spots: desiredTemperatureData
+              .asMap()
+              .map(
+                (index, desiredTemperature) => MapEntry(
+                  index.toDouble(),
+                  FlSpot(index.toDouble(), desiredTemperature),
+                ),
+              )
+              .values
+              .toList(),
+        ),
       ],
     );
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 class CoffeeMachineRepository {
@@ -29,24 +30,23 @@ class CoffeeMachineRepository {
     final List<double> mockData = [];
     final random = Random();
 
-    // Generate initial mock data
-    for (int i = 0; i < 10; i++) {
-      final temperature = random.nextInt(101).toDouble();
-
-      mockData.add(temperature);
-    }
+    // Generate initial mock data with a single value
+    final initialTemperature = random.nextInt(100).toDouble();
+    mockData.add(initialTemperature);
 
     return Stream.periodic(const Duration(seconds: 5), (count) {
-      // Update the temperature values every 5 seconds
-      final updatedData = mockData.map((temperature) {
-        final newTemperature = random.nextInt(101).toDouble();
-        return newTemperature;
-      }).toList();
+      // Generate a new temperature value
+      final newTemperature = random.nextInt(100).toDouble();
 
-      mockData.clear();
-      mockData.addAll(updatedData);
+      // Add the new temperature value to the list
+      mockData.add(newTemperature);
 
-      return updatedData;
+      // If the list has more than 30 values, remove the oldest value
+      if (mockData.length > 10) {
+        mockData.removeAt(0);
+      }
+
+      return mockData;
     });
   }
 
