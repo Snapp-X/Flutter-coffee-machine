@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_coffee/screens/menu_screen.dart';
+import 'package:flutter_coffee/screens/menu_screen_2.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() => runApp(const ProviderScope(child: MyApp()));
@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: MenuScreen(),
+      home: MenuScreenASF(),
     );
   }
 }
