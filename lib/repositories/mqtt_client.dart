@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
-final _client = MqttServerClient(_broker, _clientIdentifier);
+final _client = MqttServerClient(_broker, 'asdasdasd');
 const _broker = '10.42.0.1';
 const _username = 'dash';
 const _passwd = 'esel1234';
@@ -71,35 +71,37 @@ Future<int> initMqtt() async {
     exit(-1);
   }
 
-  // /// Ok, lets try a subscription
-  // print('EXAMPLE::Subscribing to the test/lol topic');
-  // const topic = 'test/lol'; // Not a wildcard topic
-  // _client.subscribe(topic, MqttQos.atMostOnce);
+  /// Ok, lets try a subscription
+  print(
+      'SUBSCRIBING::Subscribing to the flutter/Coffeemachine.fluttercoffee/temperature');
+  const topic =
+      'flutter/Coffeemachine.fluttercoffee/temperature'; // Not a wildcard topic
+  _client.subscribe(topic, MqttQos.atMostOnce);
 
-  // /// The client has a change notifier object(see the Observable class) which we then listen to to get
-  // /// notifications of published updates to each subscribed topic.
-  // _client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-  //   final recMess = c![0].payload as MqttPublishMessage;
-  //   final pt =
-  //       MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+  /// The client has a change notifier object(see the Observable class) which we then listen to to get
+  /// notifications of published updates to each subscribed topic.
+  _client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+    final recMess = c![0].payload as MqttPublishMessage;
+    final pt =
+        MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
-  //   /// The above may seem a little convoluted for users only interested in the
-  //   /// payload, some users however may be interested in the received publish message,
-  //   /// lets not constrain ourselves yet until the package has been in the wild
-  //   /// for a while.
-  //   /// The payload is a byte buffer, this will be specific to the topic
-  //   print(
-  //       'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
-  //   print('');
-  // });
+    /// The above may seem a little convoluted for users only interested in the
+    /// payload, some users however may be interested in the received publish message,
+    /// lets not constrain ourselves yet until the package has been in the wild
+    /// for a while.
+    /// The payload is a byte buffer, this will be specific to the topic
+    print(
+        'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
+    print('');
+  });
 
-  // /// If needed you can listen for published messages that have completed the publishing
-  // /// handshake which is Qos dependant. Any message received on this stream has completed its
-  // /// publishing handshake with the broker.
-  // _client.published!.listen((MqttPublishMessage message) {
-  //   print(
-  //       'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
-  // });
+  /// If needed you can listen for published messages that have completed the publishing
+  /// handshake which is Qos dependant. Any message received on this stream has completed its
+  /// publishing handshake with the broker.
+  _client.published!.listen((MqttPublishMessage message) {
+    print(
+        'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
+  });
 
   /// Lets publish to our topic
   /// Use the payload builder rather than a raw buffer
